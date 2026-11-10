@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 /// <summary>
 /// 移動、ジャンプ処理
@@ -19,24 +20,12 @@ public class PlayerMovement
     }
     public void Move(PlayerInput PlayerInput ,Transform transform)
     {
-        Vector3 cameraforward = PlayerInput.camera.transform.forward;
-        cameraforward.y = 0;
-        cameraforward.Normalize();
-        Vector3 cameraRight = PlayerInput.camera.transform.right;
-        cameraRight.y = 0f;
-        cameraRight.Normalize();
-        Vector3 direction = PlayerInputHandle.MoveInput.x * cameraRight + PlayerInputHandle.MoveInput.y * cameraforward;
-        direction = Vector3.ClampMagnitude(direction, 1f);
-
-        CharacterController.Move(direction * PlayerStatus.MoveSpeed * Time.deltaTime);
-
-        if (direction.sqrMagnitude > 0.01f)
-        {
-            Vector3 forward = transform.forward;
-            transform.up = Vector3.up;
-            transform.forward = Vector3.Slerp(forward, direction, PlayerStatus.RotateSpeed * Time.fixedDeltaTime);
-        }
+        Vector3 move = Vector3.forward * PlayerStatus.MoveSpeed;
+        move = Vector3.right * PlayerInputHandle.MoveInput.x * PlayerStatus.MoveSpeed;
+        //move += Vector3.right * PlayerInputHandle.MoveInput.x * PlayerStatus.MoveSpeed;(前進)
         
+        CharacterController.Move(move * Time.deltaTime);
+
     }
     public void Gravity()
     {
